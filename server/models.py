@@ -1,18 +1,17 @@
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import MetaData
-from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime
-metadata = MetaData(naming_convention={
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-})
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy_serializer import SerializerMixin
 
-db = SQLAlchemy(metadata=metadata)
+db = SQLAlchemy()
 
 class Message(db.Model, SerializerMixin):
     __tablename__ = 'messages'
-    body=db.Column(db.String)
-    username=db.Column(db.String)
-    created_at=db.Column(db.DateTime ,default=datetime.utcnow)
-    updated_at=db.Column(db.DateTime,default=datetime.utcnow,onupdate=datetime.utcnow)
 
     id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String, nullable=False)
+    username = db.Column(db.String, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Serialization rules
+    serialize_rules = ('-updated_at',)
